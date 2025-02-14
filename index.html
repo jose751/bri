@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galería de Amor</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <style>
+        /* ... (previous styles remain the same until gallery-wrapper) ... */
+        :root {
+            --pink-primary: #FFD6E0;
+            --pink-secondary: #FFACC5;
+            --pink-dark: #FF8FAB;
+            --white: #FFFFFF;
+            --text-color: #4A4A4A;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--pink-primary), var(--pink-secondary));
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .gallery-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            max-width: 800px;
+            width: 100%;
+            position: relative;
+        }
+
+        .gallery-title {
+            text-align: center;
+            color: var(--text-color);
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            font-weight: 600;
+        }
+
+        .gallery-wrapper {
+            position: relative;
+            aspect-ratio: 4/3;  /* Updated aspect ratio to 4:3 */
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .gallery-item {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .gallery-item.active {
+            opacity: 1;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .gallery-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1.5rem;
+            gap: 1rem;
+        }
+
+        .nav-button {
+            background: var(--pink-secondary);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            color: var(--white);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+        }
+
+        .nav-button:hover {
+            background: var(--pink-dark);
+            transform: translateY(-2px);
+        }
+
+        .nav-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .final-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            display: none;
+            width: 80%;
+        }
+
+        .final-message.show {
+            display: block;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (max-width: 600px) {
+            .gallery-container {
+                padding: 1rem;
+            }
+
+            .gallery-title {
+                font-size: 1.5rem;
+            }
+
+            .nav-button {
+                padding: 0.6rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="gallery-container">
+        <h1 class="gallery-title">Nuestro Amor en Imágenes ❤️</h1>
+        
+        <div class="gallery-wrapper">
+            <div class="gallery-item active animate__animated animate__fadeIn">
+                <img src="Fotos/FOTO 1.HEIC" alt="Foto 1">
+            </div>
+            <div class="gallery-item">
+                <img src="Fotos/FOTO 2.JPG" alt="Foto 2">
+            </div>
+            <div class="gallery-item">
+                <img src="Fotos/FOTO 3.JPG" alt="Foto 3">
+            </div>
+            <div class="gallery-item">
+                <img src="Fotos/FOTO 4.JPG" alt="Foto 4">
+            </div>
+            <div class="gallery-item">
+                <img src="Fotos/FOTO 5.HEIC" alt="Foto 5">
+            </div>
+            <div class="gallery-item">
+                <img src="Fotos/FOTO 6.HEIC" alt="Foto 6">
+            </div>
+            <div class="gallery-item">
+                <img src="Fotos/FOTO 7.HEIC" alt="Foto 7">
+            </div>
+        </div>
+
+        <div class="gallery-nav">
+            <button class="nav-button" id="prevBtn">Anterior</button>
+            <button class="nav-button" id="nextBtn">Siguiente</button>
+        </div>
+
+        <div class="final-message" id="finalMessage">
+            <h2 style="color: var(--text-color); margin-bottom: 1rem;">¡Te Amo! ❤️</h2>
+            <p style="color: var(--text-color);">Cada momento contigo es especial y estas fotos son solo una pequeña muestra de nuestro amor.</p>
+        </div>
+    </div>
+
+    <script>
+        const items = document.querySelectorAll('.gallery-item');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const finalMessage = document.getElementById('finalMessage');
+        
+        let currentIndex = 0;
+        const animations = [
+            'animate__fadeIn',
+            'animate__slideInRight',
+            'animate__zoomIn',
+            'animate__bounceIn'
+        ];
+
+        function updateGallery() {
+            items.forEach((item, index) => {
+                item.classList.remove('active');
+                animations.forEach(anim => item.classList.remove(anim));
+            });
+
+            items[currentIndex].classList.add('active');
+            const randomAnimation = animations[Math.floor(Math.random() * animations.length)];
+            items[currentIndex].classList.add('animate__animated', randomAnimation);
+
+            prevBtn.disabled = currentIndex === 0;
+            // Removemos esta línea: nextBtn.disabled = currentIndex === items.length - 1;
+
+            if (currentIndex === items.length - 1) {
+                nextBtn.removeEventListener('click', nextSlide);
+                nextBtn.addEventListener('click', redirectToProposal);
+            } else {
+                nextBtn.removeEventListener('click', redirectToProposal);
+                nextBtn.addEventListener('click', nextSlide);
+            }
+
+            if (currentIndex === items.length - 1) {
+                setTimeout(() => {
+                    finalMessage.classList.add('show');
+                }, 1000);
+            } else {
+                finalMessage.classList.remove('show');
+            }
+        }
+
+     
+        function nextSlide() {
+            if (currentIndex < items.length - 1) {
+                currentIndex++;
+                updateGallery();
+            }
+        }
+        function redirectToProposal() {
+            window.location.href = 'propuesta.html';  // Asumiendo que guardas el juego como proposal.html
+        }
+
+        prevBtn.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateGallery();
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (currentIndex < items.length - 1) {
+                currentIndex++;
+                updateGallery();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft' && currentIndex > 0) {
+                currentIndex--;
+                updateGallery();
+            } else if (e.key === 'ArrowRight' && currentIndex < items.length - 1) {
+                currentIndex++;
+                updateGallery();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¿Quieres ser mi novia?</title>
+    <style>
+        :root {
+            --pink-primary: #FFD6E0;
+            --pink-secondary: #FFACC5;
+            --pink-dark: #FF8FAB;
+            --white: #FFFFFF;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--pink-primary), var(--pink-secondary));
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #4A4A4A;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 1rem 3rem;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .btn-si {
+            background-color: var(--pink-secondary);
+            color: white;
+        }
+
+        .btn-si:hover {
+            background-color: var(--pink-dark);
+            transform: scale(1.1);
+        }
+
+        .btn-no {
+            background-color: #f8f9fa;
+            border: 2px solid #dee2e6;
+            position: relative;
+        }
+
+        .success-message {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            z-index: 1000;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .success-message h2 {
+            color: #4A4A4A;
+            margin-bottom: 1rem;
+        }
+
+        .success-message p {
+            color: #6c757d;
+            font-size: 1.1rem;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .hearts {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        .heart {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: var(--pink-secondary);
+            transform: rotate(45deg);
+            animation: heartFloat 4s ease-in infinite;
+        }
+
+        .heart::before,
+        .heart::after {
+            content: '';
+            width: 20px;
+            height: 20px;
+            background: var(--pink-secondary);
+            border-radius: 50%;
+            position: absolute;
+        }
+
+        .heart::before {
+            left: -10px;
+        }
+
+        .heart::after {
+            top: -10px;
+        }
+
+        @keyframes heartFloat {
+            0% {
+                transform: rotate(45deg) translateY(0);
+                opacity: 1;
+            }
+            100% {
+                transform: rotate(45deg) translateY(-1000px);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>¿Quieres ser mi novia? ❤️</h1>
+        <div class="buttons">
+            <button class="btn btn-si" onclick="aceptar()">Sí</button>
+            <button class="btn btn-no" onmouseover="moverBoton(this)">No</button>
+        </div>
+    </div>
+
+    <div class="success-message" id="successMessage">
+        <h2>¡Felicidades! 🎉</h2>
+        <p>Ahora somos novios y estaremos juntos para siempre ❤️</p>
+    </div>
+
+    <div class="hearts" id="hearts"></div>
+
+    <script>
+        function moverBoton(btn) {
+            const container = document.querySelector('.container');
+            const rect = container.getBoundingClientRect();
+            const btnRect = btn.getBoundingClientRect();
+
+            const randomX = Math.random() * (rect.width - btnRect.width);
+            const randomY = Math.random() * (rect.height - btnRect.height);
+
+            btn.style.position = 'absolute';
+            btn.style.left = `${randomX}px`;
+            btn.style.top = `${randomY}px`;
+        }
+
+        function crearCorazones() {
+            const heartsContainer = document.getElementById('hearts');
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.className = 'heart';
+                    heart.style.left = Math.random() * 100 + 'vw';
+                    heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                    heartsContainer.appendChild(heart);
+                    
+                    setTimeout(() => heart.remove(), 4000);
+                }, i * 200);
+            }
+        }
+
+        function aceptar() {
+            const successMessage = document.getElementById('successMessage');
+            successMessage.style.display = 'block';
+            crearCorazones();
+        }
+    </script>
+</body>
+</html>
