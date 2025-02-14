@@ -6,7 +6,7 @@
     <title>Galería de Amor</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
     <style>
-        /* ... (previous styles remain the same until gallery-wrapper) ... */
+        /* ... (estilos anteriores permanecen igual) ... */
         :root {
             --pink-primary: #FFD6E0;
             --pink-secondary: #FFACC5;
@@ -51,7 +51,7 @@
 
         .gallery-wrapper {
             position: relative;
-            aspect-ratio: 4/3;  /* Updated aspect ratio to 4:3 */
+            aspect-ratio: 4/3;
             overflow: hidden;
             border-radius: 15px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
@@ -152,7 +152,7 @@
         <h1 class="gallery-title">Nuestro Amor en Imágenes ❤️</h1>
         
         <div class="gallery-wrapper">
-            <div class="gallery-item active animate__animated animate__fadeIn">
+            <div class="gallery-item active">
                 <img src="Fotos/FOTO 1.HEIC" alt="Foto 1">
             </div>
             <div class="gallery-item">
@@ -193,77 +193,73 @@
         const finalMessage = document.getElementById('finalMessage');
         
         let currentIndex = 0;
-        const animations = [
-            'animate__fadeIn',
-            'animate__slideInRight',
-            'animate__zoomIn',
-            'animate__bounceIn'
-        ];
 
         function updateGallery() {
-            items.forEach((item, index) => {
+            items.forEach(item => {
                 item.classList.remove('active');
-                animations.forEach(anim => item.classList.remove(anim));
+                item.classList.remove('animate__animated', 'animate__fadeIn', 'animate__slideInRight', 'animate__zoomIn', 'animate__bounceIn');
             });
 
-            items[currentIndex].classList.add('active');
+            const currentItem = items[currentIndex];
+            currentItem.classList.add('active');
+            
+            // Agregar animación aleatoria
+            const animations = ['animate__fadeIn', 'animate__slideInRight', 'animate__zoomIn', 'animate__bounceIn'];
             const randomAnimation = animations[Math.floor(Math.random() * animations.length)];
-            items[currentIndex].classList.add('animate__animated', randomAnimation);
+            currentItem.classList.add('animate__animated', randomAnimation);
 
+            // Actualizar estado de los botones
             prevBtn.disabled = currentIndex === 0;
-            // Removemos esta línea: nextBtn.disabled = currentIndex === items.length - 1;
-
-            if (currentIndex === items.length - 1) {
-                nextBtn.removeEventListener('click', nextSlide);
-                nextBtn.addEventListener('click', redirectToProposal);
-            } else {
-                nextBtn.removeEventListener('click', redirectToProposal);
-                nextBtn.addEventListener('click', nextSlide);
-            }
-
+            
+            // Mostrar mensaje final en la última imagen
             if (currentIndex === items.length - 1) {
                 setTimeout(() => {
                     finalMessage.classList.add('show');
                 }, 1000);
+                
+                // Cambiar el evento del botón siguiente
+                nextBtn.removeEventListener('click', nextSlide);
+                nextBtn.addEventListener('click', redirectToProposal);
             } else {
                 finalMessage.classList.remove('show');
+                nextBtn.removeEventListener('click', redirectToProposal);
+                nextBtn.addEventListener('click', nextSlide);
             }
         }
 
-     
         function nextSlide() {
             if (currentIndex < items.length - 1) {
                 currentIndex++;
                 updateGallery();
             }
         }
-        function redirectToProposal() {
-            window.location.href = 'propuesta.html';  // Asumiendo que guardas el juego como proposal.html
-        }
 
-        prevBtn.addEventListener('click', () => {
+        function prevSlide() {
             if (currentIndex > 0) {
                 currentIndex--;
                 updateGallery();
             }
-        });
+        }
 
-        nextBtn.addEventListener('click', () => {
-            if (currentIndex < items.length - 1) {
-                currentIndex++;
-                updateGallery();
-            }
-        });
+        function redirectToProposal() {
+            window.location.href = 'propuesta.html';
+        }
 
+        // Event Listeners
+        prevBtn.addEventListener('click', prevSlide);
+        nextBtn.addEventListener('click', nextSlide);
+
+        // Keyboard navigation
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowLeft' && currentIndex > 0) {
-                currentIndex--;
-                updateGallery();
-            } else if (e.key === 'ArrowRight' && currentIndex < items.length - 1) {
-                currentIndex++;
-                updateGallery();
+            if (e.key === 'ArrowLeft') {
+                prevSlide();
+            } else if (e.key === 'ArrowRight') {
+                nextSlide();
             }
         });
+
+        // Initialize gallery
+        updateGallery();
     </script>
 </body>
 </html>
